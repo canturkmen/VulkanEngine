@@ -2,6 +2,7 @@
 
 #include "VulkanWindow.h"
 #include "VulkanEnginePipeline.h"
+#include "VulkanDevice.h"
 
 namespace VulkanEngine {
 
@@ -14,7 +15,12 @@ namespace VulkanEngine {
 		void Run();
 	private:
 		VulkanWindow vulkanWindow{WIDTH, HEIGHT, "Hello Vulkan!" };
-		VulkanEnginePipeline vulkanEnginePipeline{ "src/Shaders/SimpleShader.vert.spv", "src/Shaders/SimpleShader.frag.spv" };
+		VulkanDevice vulkanDevice{vulkanWindow};
+		VulkanEnginePipeline vulkanEnginePipeline{
+			vulkanDevice, 
+			"src/Shaders/SimpleShader.vert.spv", 
+			"src/Shaders/SimpleShader.frag.spv", 
+			VulkanEnginePipeline::DefaultPipelineConfigInfo(WIDTH, HEIGHT)};
 	};
 
 }

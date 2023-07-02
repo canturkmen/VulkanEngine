@@ -1,5 +1,7 @@
 #include "VulkanWindow.h"
 
+#include <stdexcept>
+
 namespace VulkanEngine {
 
 	VulkanWindow::VulkanWindow(int w, int h, std::string name)
@@ -8,6 +10,12 @@ namespace VulkanEngine {
 		InitWindow();
 	}
 	
+	void VulkanWindow::createWindowSurface(VkInstance instance, VkSurfaceKHR* surface)
+	{
+		if (glfwCreateWindowSurface(instance, window, nullptr, surface) != VK_SUCCESS) 
+			throw std::runtime_error("Failed to create window surface");
+	}
+
 	VulkanWindow::~VulkanWindow()
 	{
 		glfwDestroyWindow(window);

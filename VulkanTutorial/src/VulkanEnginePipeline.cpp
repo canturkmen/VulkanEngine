@@ -6,9 +6,16 @@
 
 namespace VulkanEngine {
 
-	VulkanEnginePipeline::VulkanEnginePipeline(const std::string& vertexFilePath, const std::string& fragmentShaderFilePath)
+	VulkanEnginePipeline::VulkanEnginePipeline(VulkanDevice& vulkanDevice, const std::string& vertexFilePath, const std::string& fragmentShaderFilePath,
+		const PipelineConfigInfo& configInfo) : m_VulkanDevice(vulkanDevice)
 	{
-		createGraphicsPipeline(vertexFilePath, fragmentShaderFilePath);
+		createGraphicsPipeline(vertexFilePath, fragmentShaderFilePath, configInfo);
+	}
+
+	PipelineConfigInfo VulkanEnginePipeline::DefaultPipelineConfigInfo(uint32_t width, uint32_t height)
+	{
+		PipelineConfigInfo configInfo;
+		return configInfo;
 	}
 
 	std::vector<char> VulkanEnginePipeline::readFile(const std::string& filePath)
@@ -26,7 +33,7 @@ namespace VulkanEngine {
 		return buffer;
 	}
 
-	void VulkanEnginePipeline::createGraphicsPipeline(const std::string& vertexFilePath, const std::string& fragmentShaderFilePath)
+	void VulkanEnginePipeline::createGraphicsPipeline(const std::string& vertexFilePath, const std::string& fragmentShaderFilePath, const PipelineConfigInfo& configInfo)
 	{
 		const auto& vertexCode = readFile(vertexFilePath);
 		const auto& fragCode = readFile(fragmentShaderFilePath);
@@ -34,4 +41,16 @@ namespace VulkanEngine {
 		std::cout << "Vertex Shader Code Size: " << vertexCode.size() << std::endl;
 		std::cout << "Fragment Shader Code Size: " << fragCode.size() << std::endl;
 	}
+
+	void VulkanEnginePipeline::createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule)
+	{
+		VkShaderModuleCreateInfo createInfo;
+		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+		createInfo.codeSize = code.size();
+		createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
+
+		if (vkCreateShaderModule(m_VulkanDevice.device(), &createInfo, nullptr, shaderModule) != VK_SUCCESS)
+			throw std::runtime_error("Failed to create shader modules");
+	}
+
 }
