@@ -9,7 +9,7 @@ namespace VulkanEngine {
 
 	struct PipelineConfigInfo
 	{
-
+		VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo; 
 	};
 	
 	class VulkanEnginePipeline 
