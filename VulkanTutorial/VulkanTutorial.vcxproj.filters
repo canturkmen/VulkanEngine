@@ -24,6 +24,9 @@
     <ClCompile Include="src\VulkanWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\VulkanEnginePipeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -32,5 +35,12 @@
     <ClInclude Include="src\VulkanWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\VulkanEnginePipeline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Shaders\SimpleShader.vert" />
+    <None Include="src\Shaders\SimpleShader.frag" />
   </ItemGroup>
 </Project>

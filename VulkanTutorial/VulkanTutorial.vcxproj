@@ -141,11 +141,17 @@
   <ItemGroup>
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\VulkanEnginePipeline.cpp" />
     <ClCompile Include="src\VulkanWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h" />
+    <ClInclude Include="src\VulkanEnginePipeline.h" />
     <ClInclude Include="src\VulkanWindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Shaders\SimpleShader.frag" />
+    <None Include="src\Shaders\SimpleShader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
