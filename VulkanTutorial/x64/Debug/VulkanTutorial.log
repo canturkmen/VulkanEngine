@@ -1,3 +1,2 @@
 ﻿  VulkanEnginePipeline.cpp
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
   VulkanTutorial.vcxproj -> C:\dev\Computer-Graphics\VulkanTutorial\x64\Debug\VulkanTutorial.exe
