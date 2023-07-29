@@ -15,7 +15,6 @@ namespace VulkanEngine {
 		VkPipelineRasterizationStateCreateInfo rasterizationInfo;
 		VkPipelineMultisampleStateCreateInfo multisampleInfo;
 		VkPipelineColorBlendAttachmentState colorBlendAttachment;
-		VkPipelineColorBlendStateCreateInfo colorBlendInfo;
 		VkPipelineDepthStencilStateCreateInfo depthStencilInfo;
 		std::vector<VkDynamicState> dynamicStateEnables;
 		VkPipelineDynamicStateCreateInfo dynamicStateInfo;
@@ -35,6 +34,7 @@ namespace VulkanEngine {
 		VulkanEnginePipeline(const VulkanEnginePipeline&) = delete;
 		void operator=(const VulkanEnginePipeline&) = delete;
 
+		void Bind(VkCommandBuffer commandBuffer);
 		static PipelineConfigInfo DefaultPipelineConfigInfo(uint32_t width, uint32_t height);
 
 	private:
