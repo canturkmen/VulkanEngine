@@ -144,12 +144,14 @@
     <ClCompile Include="src\VulkanDevice.cpp" />
     <ClCompile Include="src\VulkanEnginePipeline.cpp" />
     <ClCompile Include="src\VulkanWindow.cpp" />
+    <ClCompile Include="src\VulkanSwapChain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\VulkanDevice.h" />
     <ClInclude Include="src\VulkanEnginePipeline.h" />
     <ClInclude Include="src\VulkanWindow.h" />
+    <ClInclude Include="src\VulkanSwapChain.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\SimpleShader.frag" />

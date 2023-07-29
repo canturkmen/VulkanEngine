@@ -3,6 +3,10 @@
 #include "VulkanWindow.h"
 #include "VulkanEnginePipeline.h"
 #include "VulkanDevice.h"
+#include "VulkanSwapChain.h"
+
+#include <memory>
+#include <vector>
 
 namespace VulkanEngine {
 
@@ -12,15 +16,25 @@ namespace VulkanEngine {
 		static constexpr int WIDTH = 800;
 		static constexpr int HEIGHT = 600;
 
+		Application();
+		~Application();
+
+		Application(const Application&) = delete;
+		Application& operator=(const Application&) = delete;
+
 		void Run();
 	private:
+		void createPipeline();
+		void createPipelineLayout();
+		void createCommandBuffers();
+		void drawFrame();
+
 		VulkanWindow vulkanWindow{WIDTH, HEIGHT, "Hello Vulkan!" };
 		VulkanDevice vulkanDevice{vulkanWindow};
-		VulkanEnginePipeline vulkanEnginePipeline{
-			vulkanDevice, 
-			"src/Shaders/SimpleShader.vert.spv", 
-			"src/Shaders/SimpleShader.frag.spv", 
-			VulkanEnginePipeline::DefaultPipelineConfigInfo(WIDTH, HEIGHT)};
+		VulkanSwapChain vulkanSwapChain{vulkanDevice, vulkanWindow.getExtent()};
+		std::unique_ptr<VulkanEnginePipeline> vulkanEnginePipeline;
+		VkPipelineLayout vulkanEnginePipelineLayout;
+		std::vector<VkCommandBuffer> vulkanEngineCommandBuffers;
 	};
 
 }
