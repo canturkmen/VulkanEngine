@@ -7,6 +7,7 @@ namespace VulkanEngine {
 
 	Application::Application()
 	{
+		loadModals();
 		createPipelineLayout();
 		createPipeline();
 		createCommandBuffers();
@@ -40,6 +41,17 @@ namespace VulkanEngine {
 
 		if (vkCreatePipelineLayout(vulkanDevice.device(), &pipelineLayoutInfo, nullptr, &vulkanEnginePipelineLayout) != VK_SUCCESS) 
 			throw std::runtime_error("Failed to create pipeline layout");
+	}
+
+	void Application::loadModals()
+	{
+		std::vector<VulkanModal::Vertex> vertices{
+			{{0.0f, -0.5f}},
+			{{0.5f, 0.5f}},
+			{{-0.5f, 0.5f}}
+		};
+
+		vulkanModal = std::make_unique<VulkanModal>(vulkanDevice, vertices);
 	}
 
 	void Application::createPipeline()
@@ -81,13 +93,14 @@ namespace VulkanEngine {
 
 			std::array<VkClearValue, 2> clearValues{};
 			clearValues[0].color = { 0.1f, 0.1f, 0.1f, 1.0f };
-			clearValues[1].depthStencil = { 1, 0 };
+			clearValues[1].depthStencil = { 1.0f, 0 };
 			renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
 			renderPassInfo.pClearValues = clearValues.data();
 
 			vkCmdBeginRenderPass(vulkanEngineCommandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 			vulkanEnginePipeline->Bind(vulkanEngineCommandBuffers[i]);
-			vkCmdDraw(vulkanEngineCommandBuffers[i], 3, 1, 0, 0);
+			vulkanModal->Bind(vulkanEngineCommandBuffers[i]);
+			vulkanModal->Draw(vulkanEngineCommandBuffers[i]);
 
 			vkCmdEndRenderPass(vulkanEngineCommandBuffers[i]);
 			if (vkEndCommandBuffer(vulkanEngineCommandBuffers[i]) != VK_SUCCESS)

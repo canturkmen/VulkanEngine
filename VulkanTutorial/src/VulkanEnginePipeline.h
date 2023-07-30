@@ -1,6 +1,7 @@
 #pragma once
 
 #include "VulkanDevice.h"
+#include "VulkanModal.h"
 
 #include <string>
 #include <vector>
@@ -15,9 +16,8 @@ namespace VulkanEngine {
 		VkPipelineRasterizationStateCreateInfo rasterizationInfo;
 		VkPipelineMultisampleStateCreateInfo multisampleInfo;
 		VkPipelineColorBlendAttachmentState colorBlendAttachment;
+		VkPipelineColorBlendStateCreateInfo colorBlendInfo;
 		VkPipelineDepthStencilStateCreateInfo depthStencilInfo;
-		std::vector<VkDynamicState> dynamicStateEnables;
-		VkPipelineDynamicStateCreateInfo dynamicStateInfo;
 		VkPipelineLayout pipelineLayout = nullptr;
 		VkRenderPass renderPass = nullptr;
 		uint32_t subpass = 0;
@@ -29,7 +29,7 @@ namespace VulkanEngine {
 		VulkanEnginePipeline(VulkanDevice& vulkanDevice, const std::string& vertexFilePath, const std::string& fragmentShaderFilePath,
 			const PipelineConfigInfo& configInfo);
 
-		~VulkanEnginePipeline() {}
+		~VulkanEnginePipeline();
 
 		VulkanEnginePipeline(const VulkanEnginePipeline&) = delete;
 		void operator=(const VulkanEnginePipeline&) = delete;

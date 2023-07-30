@@ -24,6 +24,7 @@ namespace VulkanEngine {
 
 		void Run();
 	private:
+		void loadModals();
 		void createPipeline();
 		void createPipelineLayout();
 		void createCommandBuffers();
@@ -35,6 +36,7 @@ namespace VulkanEngine {
 		std::unique_ptr<VulkanEnginePipeline> vulkanEnginePipeline;
 		VkPipelineLayout vulkanEnginePipelineLayout;
 		std::vector<VkCommandBuffer> vulkanEngineCommandBuffers;
+		std::unique_ptr<VulkanModal> vulkanModal;
 	};
 
 }
