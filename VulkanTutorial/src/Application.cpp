@@ -46,9 +46,9 @@ namespace VulkanEngine {
 	void Application::loadModals()
 	{
 		std::vector<VulkanModal::Vertex> vertices{
-			{{0.0f, -0.5f}},
-			{{0.5f, 0.5f}},
-			{{-0.5f, 0.5f}}
+			{{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+			{{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+			{{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
 		};
 
 		vulkanModal = std::make_unique<VulkanModal>(vulkanDevice, vertices);
