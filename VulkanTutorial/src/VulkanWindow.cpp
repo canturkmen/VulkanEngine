@@ -26,9 +26,22 @@ namespace VulkanEngine {
 	{
 		glfwInit();
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
 		window = glfwCreateWindow(width, height, windowName.c_str(), nullptr, nullptr);
+		glfwSetWindowUserPointer(window, this);
+		glfwSetFramebufferSizeCallback(window, FrameBufferResizedCallback);
 	}
+
+	void VulkanWindow::FrameBufferResizedCallback(GLFWwindow* window, int width, int height)
+	{
+		auto vulkanEngineWindow = reinterpret_cast<VulkanWindow*>(glfwGetWindowUserPointer(window));
+		vulkanEngineWindow->frameBufferResized = true;
+		vulkanEngineWindow->width = width;
+		vulkanEngineWindow->height = height;
+
+
+	}
+
 }
 

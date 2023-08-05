@@ -14,12 +14,14 @@ namespace VulkanEngine {
 	VulkanSwapChain::VulkanSwapChain(VulkanDevice& deviceRef, VkExtent2D windowExtent)
 		: device{ deviceRef }, windowExtent{ windowExtent }
 	{
-		createSwapChain();
-		createImageViews();
-		createRenderPass();
-		createDepthResources();
-		createFramebuffers();
-		createSyncObjects();
+		init();
+	}
+
+	VulkanSwapChain::VulkanSwapChain(VulkanDevice& deviceRef, VkExtent2D windowExtent, std::shared_ptr<VulkanSwapChain> previous)
+		: device{ deviceRef }, windowExtent{ windowExtent }, oldSwapChain{ previous }
+	{
+		init();
+		oldSwapChain = nullptr;		
 	}
 
 	VulkanSwapChain::~VulkanSwapChain() {
@@ -120,6 +122,16 @@ namespace VulkanEngine {
 		return result;
 	}
 
+	void VulkanSwapChain::init()
+	{
+		createSwapChain();
+		createImageViews();
+		createRenderPass();
+		createDepthResources();
+		createFramebuffers();
+		createSyncObjects();
+	}
+
 	void VulkanSwapChain::createSwapChain() {
 		SwapChainSupportDetails swapChainSupport = device.getSwapChainSupport();
 
@@ -164,7 +176,7 @@ namespace VulkanEngine {
 		createInfo.presentMode = presentMode;
 		createInfo.clipped = VK_TRUE;
 
-		createInfo.oldSwapchain = VK_NULL_HANDLE;
+		createInfo.oldSwapchain = oldSwapChain == nullptr ? VK_NULL_HANDLE : oldSwapChain->swapChain;
 
 		if (vkCreateSwapchainKHR(device.device(), &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create swap chain!");
