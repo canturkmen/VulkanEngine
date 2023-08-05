@@ -39,8 +39,6 @@ namespace VulkanEngine {
 		vulkanEngineWindow->frameBufferResized = true;
 		vulkanEngineWindow->width = width;
 		vulkanEngineWindow->height = height;
-
-
 	}
 
 }
