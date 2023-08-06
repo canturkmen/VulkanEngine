@@ -146,6 +146,7 @@
     <ClCompile Include="src\VulkanWindow.cpp" />
     <ClCompile Include="src\VulkanSwapChain.cpp" />
     <ClCompile Include="src\VulkanModal.cpp" />
+    <ClCompile Include="src\VulkanEngineGameObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h" />
@@ -154,6 +155,7 @@
     <ClInclude Include="src\VulkanWindow.h" />
     <ClInclude Include="src\VulkanSwapChain.h" />
     <ClInclude Include="src\VulkanModal.h" />
+    <ClInclude Include="src\VulkanEngineGameObject.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\SimpleShader.frag" />

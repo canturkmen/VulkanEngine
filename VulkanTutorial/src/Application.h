@@ -4,6 +4,7 @@
 #include "VulkanEnginePipeline.h"
 #include "VulkanDevice.h"
 #include "VulkanSwapChain.h"
+#include "VulkanEngineGameObject.h"
 
 #include <memory>
 #include <vector>
@@ -24,7 +25,7 @@ namespace VulkanEngine {
 
 		void Run();
 	private:
-		void loadModals();
+		void loadGameObjects();
 		void createPipeline();
 		void createPipelineLayout();
 		void createCommandBuffers();
@@ -32,6 +33,7 @@ namespace VulkanEngine {
 		void drawFrame();
 		void recreateSwapChain();
 		void recordCommandBuffer(int imageIndex);
+		void renderGameObjects(VkCommandBuffer commandBuffer);
 
 		VulkanWindow vulkanWindow{WIDTH, HEIGHT, "Hello Vulkan!" };
 		VulkanDevice vulkanDevice{vulkanWindow};
@@ -39,7 +41,7 @@ namespace VulkanEngine {
 		std::unique_ptr<VulkanEnginePipeline> vulkanEnginePipeline;
 		VkPipelineLayout vulkanEnginePipelineLayout;
 		std::vector<VkCommandBuffer> vulkanEngineCommandBuffers;
-		std::unique_ptr<VulkanModal> vulkanModal;
+		std::vector<VulkanEngineGameObject> vulkanGameObjects;
 	};
 
 }
