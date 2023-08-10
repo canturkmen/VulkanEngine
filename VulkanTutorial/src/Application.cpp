@@ -2,7 +2,6 @@
 #include "VulkanCamera.h"
 #include "VulkanEngineRendererSystem.h"
 
-// libs
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
@@ -29,6 +28,8 @@ namespace VulkanEngine {
 	{
 		VulkanEngineRendererSystem simpleRenderSystem{ vulkanDevice, vulkanRenderer.getSwapChainRenderPass() };
 		VulkanCamera camera{};
+		// camera.SetViewDirection({0.0f, 0.0f, 0.0f}, {0.7f, 0.0f, 1.0f});
+		camera.SetViewTarget({-1.f, -2.f, 2.f}, {0.0f, 0.0f, 2.5f});
 
 		while (!vulkanWindow.ShouldClose()) {
 			glfwPollEvents();
@@ -48,7 +49,8 @@ namespace VulkanEngine {
 		vkDeviceWaitIdle(vulkanDevice.device());
 	}
 
-	std::unique_ptr<VulkanModal> createCubeModel(VulkanDevice& device, glm::vec3 offset) {
+	std::unique_ptr<VulkanModal> createCubeModel(VulkanDevice& device, glm::vec3 offset) 
+	{
 		std::vector<VulkanModal::Vertex> vertices{
 
 			// left face (white)
@@ -109,9 +111,9 @@ namespace VulkanEngine {
 
 	void Application::loadGameObjects() 
 	{
-		std::shared_ptr<VulkanModal> lveModel = createCubeModel(vulkanDevice, { .0f, .0f, 0.0f });
+		std::shared_ptr<VulkanModal> vulkanModal = createCubeModel(vulkanDevice, { .0f, .0f, 0.0f });
 		auto cube = VulkanEngineGameObject::CreateGameObject();
-		cube.modal = lveModel;
+		cube.modal = vulkanModal;
 		cube.transform.translation = { .0f, .0f, 2.5f };
 		cube.transform.scale = { .5f, .5f, .5f };
 		gameObjects.push_back(std::move(cube));
