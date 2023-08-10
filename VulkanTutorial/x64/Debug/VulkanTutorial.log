@@ -1,3 +1,1 @@
-﻿  Application.cpp
-C:\dev\Computer-Graphics\VulkanTutorial\VulkanTutorial\src\Application.cpp(134,54): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
-  VulkanTutorial.vcxproj -> C:\dev\Computer-Graphics\VulkanTutorial\x64\Debug\VulkanTutorial.exe
+﻿  VulkanTutorial.vcxproj -> C:\dev\Computer-Graphics\VulkanEngine\x64\Debug\VulkanTutorial.exe
