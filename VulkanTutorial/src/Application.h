@@ -5,7 +5,6 @@
 #include "VulkanEngineRenderer.h"
 #include "VulkanWindow.h"
 
-// std
 #include <memory>
 #include <vector>
 
@@ -22,7 +21,7 @@ namespace VulkanEngine {
 		Application(const Application&) = delete;
 		Application& operator=(const Application&) = delete;
 
-		void run();
+		void Run();
 
 	private:
 		void loadGameObjects();

@@ -2,15 +2,17 @@
 #include "VulkanCamera.h"
 #include "VulkanEngineRendererSystem.h"
 
+#include "KeyboardMovementController.h"
+
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 
-// std
 #include <array>
 #include <cassert>
 #include <stdexcept>
+#include <chrono>
 
 namespace VulkanEngine {
 
@@ -24,17 +26,28 @@ namespace VulkanEngine {
 
 	}
 
-	void Application::run() 
+	void Application::Run()
 	{
 		VulkanEngineRendererSystem simpleRenderSystem{ vulkanDevice, vulkanRenderer.getSwapChainRenderPass() };
 		VulkanCamera camera{};
-		// camera.SetViewDirection({0.0f, 0.0f, 0.0f}, {0.7f, 0.0f, 1.0f});
+
 		camera.SetViewTarget({-1.f, -2.f, 2.f}, {0.0f, 0.0f, 2.5f});
+		auto viewerObject = VulkanEngineGameObject::CreateGameObject();
+		KeyboardController cameraController{};
+
+		auto currentTime = std::chrono::high_resolution_clock::now();
 
 		while (!vulkanWindow.ShouldClose()) {
 			glfwPollEvents();
+
+			auto newTime = std::chrono::high_resolution_clock::now();
+			float frameTime = std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
+			currentTime = newTime;
+
+			cameraController.MoveInPlaneXZ(vulkanWindow.getGLFWwindow(), frameTime, viewerObject);
+			camera.SetViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
+
 			float aspect = vulkanRenderer.getAspectRatio();
-			// camera.setOrthographicProjection(-aspect, aspect, -1, 1, -1, 1);
 			camera.SetPerspectiveProjection(glm::radians(50.f), aspect, 0.1f, 10.f);
 
 			if (auto commandBuffer = vulkanRenderer.beginFrame()) 

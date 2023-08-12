@@ -52,7 +52,7 @@ namespace VulkanEngine {
 	void VulkanCamera::SetViewTarget(glm::vec3 position, glm::vec3 target, glm::vec3 up)
 	{
 		SetViewDirection(position, target - position, up);
-	}
+	} 
 
 	void VulkanCamera::SetViewYXZ(glm::vec3 position, glm::vec3 rotation)
 	{

@@ -9,7 +9,7 @@ int main(void)
 	VulkanEngine::Application app;
 
 	try {
-		app.run();
+		app.Run();
 	} catch (const std::exception& e) {
 		std::cerr << e.what() << std::endl;
 		return EXIT_FAILURE;
