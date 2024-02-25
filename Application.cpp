@@ -58,7 +58,6 @@ namespace VulkanEngine {
 				vulkanRenderer.endFrame();
 			}
 		}
-
 		vkDeviceWaitIdle(vulkanDevice.device());
 	}
 
@@ -67,8 +66,15 @@ namespace VulkanEngine {
 		std::shared_ptr<VulkanModal> vulkanModal = VulkanModal::CreateModelFromFile(vulkanDevice, "src/Models/flat_vase.obj");
 		auto gameObject = VulkanEngineGameObject::CreateGameObject();
 		gameObject.modal = vulkanModal;
-		gameObject.transform.translation = { .0f, .0f, 2.5f };
-		gameObject.transform.scale = glm::vec3{ 3.0f };
+		gameObject.transform.translation = { -.5f, .5f, 2.5f };
+		gameObject.transform.scale = glm::vec3{ 3.0f, 1.5f, 3.0f };
 		gameObjects.push_back(std::move(gameObject));
+
+		std::shared_ptr<VulkanModal> smoothVaseModal = VulkanModal::CreateModelFromFile(vulkanDevice, "src/Models/smooth_vase.obj");
+		auto smoothVase = VulkanEngineGameObject::CreateGameObject();
+		smoothVase.modal = smoothVaseModal;
+		smoothVase.transform.translation = { .5f, .5f, 2.5f };
+		smoothVase.transform.scale = glm::vec3{ 3.0f, 1.5f, 3.0f };
+		gameObjects.push_back(std::move(smoothVase));
 	}
 }
