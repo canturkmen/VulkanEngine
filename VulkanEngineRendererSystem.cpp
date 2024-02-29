@@ -60,11 +60,11 @@ namespace VulkanEngine {
 			pipelineConfig);
 	}
 
-	void VulkanEngineRendererSystem::renderGameObjects(VkCommandBuffer commandBuffer, std::vector<VulkanEngineGameObject>& gameObjects, const VulkanCamera& camera) 
+	void VulkanEngineRendererSystem::renderGameObjects(FrameInfo& frameInfo, std::vector<VulkanEngineGameObject>& gameObjects)
 	{
-		vulkanPipeline->Bind(commandBuffer);
+		vulkanPipeline->Bind(frameInfo.commandBuffer);
 
-		auto projectionView = camera.getProjection() * camera.getView();
+		auto projectionView = frameInfo.camera.getProjection() * frameInfo.camera.getView();
 
 		for (auto& obj : gameObjects) {
 			SimplePushConstantData push{};
@@ -72,15 +72,15 @@ namespace VulkanEngine {
 			push.transform = projectionView * modelMatrix;
 			push.normalMatrix = obj.transform.normalMatrix();
 
-			vkCmdPushConstants(
-				commandBuffer,
+			vkCmdPushConstants(	
+				frameInfo.commandBuffer,
 				pipelineLayout,
 				VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
 				0,
 				sizeof(SimplePushConstantData),
 				&push);
-			obj.modal->Bind(commandBuffer);
-			obj.modal->Draw(commandBuffer);
+			obj.modal->Bind(frameInfo.commandBuffer);
+			obj.modal->Draw(frameInfo.commandBuffer);
 		}
 	}
 }

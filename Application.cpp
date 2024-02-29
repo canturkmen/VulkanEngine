@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "VulkanCamera.h"
 #include "VulkanEngineRendererSystem.h"
+#include "VulkanBuffer.h"
 
 #include "KeyboardMovementController.h"
 
@@ -16,6 +17,12 @@
 
 namespace VulkanEngine {
 
+	struct GlobalUbo
+	{
+		glm::mat4 projectionView{ 1.0f };
+		glm::vec3 lightDirection{ glm::normalize(glm::vec3{1.f, -3.f, -1.f})};
+	};
+
 	Application::Application() 
 	{ 
 		loadGameObjects(); 
@@ -28,6 +35,17 @@ namespace VulkanEngine {
 
 	void Application::Run()
 	{
+		VulkanEngineBuffer globalUboBuffer{
+			vulkanDevice,
+			sizeof(GlobalUbo),
+			VulkanSwapChain::MAX_FRAMES_IN_FLIGHT,
+			VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
+			vulkanDevice.properties.limits.minUniformBufferOffsetAlignment,
+		};
+
+		globalUboBuffer.map();
+			
 		VulkanEngineRendererSystem simpleRenderSystem{ vulkanDevice, vulkanRenderer.getSwapChainRenderPass() };
 		VulkanCamera camera{};
 
@@ -52,8 +70,23 @@ namespace VulkanEngine {
 
 			if (auto commandBuffer = vulkanRenderer.beginFrame()) 
 			{
+				int frameIndex = vulkanRenderer.getFrameIndex();
+				FrameInfo frameInfo{
+					frameIndex,
+					frameTime,
+					commandBuffer,
+					camera
+				};
+
+				// update
+				GlobalUbo ubo{};
+				ubo.projectionView = camera.getProjection() * camera.getView();
+				globalUboBuffer.writeToIndex(&ubo, frameIndex);
+				globalUboBuffer.flushIndex(frameIndex);
+
+				// render
 				vulkanRenderer.beginSwapChainRenderPass(commandBuffer);
-				simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects, camera);
+				simpleRenderSystem.renderGameObjects(frameInfo, gameObjects);
 				vulkanRenderer.endSwapChainRenderPass(commandBuffer);
 				vulkanRenderer.endFrame();
 			}

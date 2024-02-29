@@ -4,6 +4,7 @@
 #include "VulkanDevice.h"
 #include "VulkanEngineGameObject.h"
 #include "VulkanEnginePipeline.h"
+#include "VulkanEngineFrameInfo.h"
 
 #include <memory>
 #include <vector>
@@ -17,7 +18,7 @@ namespace VulkanEngine {
 		VulkanEngineRendererSystem(const VulkanEngineRendererSystem&) = delete;
 		VulkanEngineRendererSystem& operator=(const VulkanEngineRendererSystem&) = delete;
 
-		void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<VulkanEngineGameObject>& gameObjects, const VulkanCamera& camera);
+		void renderGameObjects(FrameInfo& frameInfo, std::vector<VulkanEngineGameObject>& gameObjects);
 
 	private:
 		void createPipelineLayout();

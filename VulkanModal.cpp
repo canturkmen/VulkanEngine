@@ -34,17 +34,7 @@ namespace VulkanEngine {
 		createIndexBuffers(builder.indices);
 	}
 
-	VulkanModal::~VulkanModal()
-	{
-		vkDestroyBuffer(vulkanDevice.device(), vertexBuffer, nullptr);
-		vkFreeMemory(vulkanDevice.device(), vertexBufferMemory, nullptr);
-
-		if (hasIndexBuffer)
-		{
-			vkDestroyBuffer(vulkanDevice.device(), indexBuffer, nullptr);
-			vkFreeMemory(vulkanDevice.device(), indexBufferMemory, nullptr);
-		}
-	}
+	VulkanModal::~VulkanModal() {}
 
 	std::unique_ptr<VulkanModal> VulkanModal::CreateModelFromFile(VulkanDevice& device, const std::string& filepath)
 	{
@@ -56,12 +46,12 @@ namespace VulkanEngine {
 
 	void VulkanModal::Bind(VkCommandBuffer commandBuffer)
 	{
-		VkBuffer buffers[] = {vertexBuffer};
+		VkBuffer buffers[] = {vertexBuffer->getBuffer()};
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);
 
 		if (hasIndexBuffer)
-			vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+			vkCmdBindIndexBuffer(commandBuffer, indexBuffer->getBuffer(), 0, VK_INDEX_TYPE_UINT32);
 	}
 
 	void VulkanModal::Draw(VkCommandBuffer commandBuffer)
@@ -74,28 +64,22 @@ namespace VulkanEngine {
 
 	void VulkanModal::createVertexBuffers(const std::vector<Vertex>& vertices)
 	{
-		vertexCount = static_cast<uint32_t>(vertices.size());
+		vertexCount = static_cast<uint32_t>(vertices.size());	
 		assert(vertexCount >= 3 && "Vertex count must be at least 3");
 		VkDeviceSize bufferSize = sizeof(vertices[0]) * vertexCount;
+		uint32_t vertexSize = sizeof(vertices[0]);
 
-		VkBuffer stagingBuffer;
-		VkDeviceMemory stagingBufferMemory;
+		VulkanEngineBuffer stagingBuffer{ vulkanDevice, vertexSize, vertexCount, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,  
+			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT };
 
-		vulkanDevice.createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, 
-				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+		stagingBuffer.map();
+		stagingBuffer.writeToBuffer((void*)vertices.data());
 
-		void* data;
-		vkMapMemory(vulkanDevice.device(), stagingBufferMemory, 0, bufferSize, 0, &data);
-		memcpy(data, vertices.data(), static_cast<size_t>(bufferSize));
-		vkUnmapMemory(vulkanDevice.device(), stagingBufferMemory);
+		vertexBuffer = std::make_unique<VulkanEngineBuffer>(vulkanDevice, vertexSize, vertexCount, 
+			VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
-		vulkanDevice.createBuffer(bufferSize, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
-
-		vulkanDevice.copyBuffer(stagingBuffer, vertexBuffer, bufferSize);
-
-		vkDestroyBuffer(vulkanDevice.device(), stagingBuffer, nullptr);
-		vkFreeMemory(vulkanDevice.device(), stagingBufferMemory, nullptr);
+		vulkanDevice.copyBuffer(stagingBuffer.getBuffer(), vertexBuffer->getBuffer(), bufferSize);
 	}
 
 	void VulkanModal::createIndexBuffers(const std::vector<uint32_t>& indices)
@@ -107,25 +91,18 @@ namespace VulkanEngine {
 			return;
 
 		VkDeviceSize bufferSize = sizeof(indices[0]) * indexCount;
+		uint32_t indexSize = sizeof(indices[0]);
 
-		VkBuffer stagingBuffer;
-		VkDeviceMemory stagingBufferMemory;
+		VulkanEngineBuffer stagingBuffer{ vulkanDevice, indexSize, indexCount, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT };
+		stagingBuffer.map();
+		stagingBuffer.writeToBuffer((void*)indices.data());
 
-		vulkanDevice.createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+		indexBuffer = std::make_unique<VulkanEngineBuffer>(vulkanDevice, indexSize, indexCount, 
+			VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
-		void* data;
-		vkMapMemory(vulkanDevice.device(), stagingBufferMemory, 0, bufferSize, 0, &data);
-		memcpy(data, indices.data(), static_cast<size_t>(bufferSize));
-		vkUnmapMemory(vulkanDevice.device(), stagingBufferMemory);
-
-		vulkanDevice.createBuffer(bufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
-
-		vulkanDevice.copyBuffer(stagingBuffer, indexBuffer, bufferSize);
-
-		vkDestroyBuffer(vulkanDevice.device(), stagingBuffer, nullptr);
-		vkFreeMemory(vulkanDevice.device(), stagingBufferMemory, nullptr);
+		vulkanDevice.copyBuffer(stagingBuffer.getBuffer(), indexBuffer->getBuffer(), bufferSize);
 	}
 
 	std::vector<VkVertexInputBindingDescription> VulkanModal::Vertex::getBindingDescription()
